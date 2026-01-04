@@ -62,7 +62,7 @@ The player controls a spaceship navigating through an asteroid field, destroying
 |------------|---------|
 | Python | 3.10 or higher |
 | Pygame | 2.6 or later |
-| moviepy | Optional (for intro video) |
+| OpenCV | Optional (for intro video) |
 
 ---
 
@@ -71,8 +71,8 @@ The player controls a spaceship navigating through an asteroid field, destroying
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/asteroids-pygame.git
-cd asteroids-pygame
+git clone https://github.com/kfirmoscovich1/atari-asteroids-pygame.git
+cd atari-asteroids-pygame
 ```
 
 ### 2. Create a Virtual Environment (Recommended)
@@ -98,7 +98,7 @@ pip install -r requirements.txt
 Or install manually:
 ```bash
 pip install pygame
-pip install moviepy  # Optional: for intro video
+pip install opencv-python  # Optional: for intro video
 ```
 
 ---
@@ -273,8 +273,8 @@ python -m pytest tests/ -v
 
 ### Intro video doesn't play
 
-- moviepy is optional — the game functions without it
-- Install moviepy: `pip install moviepy`
+- OpenCV is optional — the game functions without it
+- Install OpenCV: `pip install opencv-python`
 - Verify `assets/atari.mp4` exists
 
 ### Assets not loading
@@ -317,6 +317,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 **Kfir Moscovich**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
+- GitHub: [@kfirmoscovich1](https://github.com/kfirmoscovich1)
 

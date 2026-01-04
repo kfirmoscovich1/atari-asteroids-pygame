@@ -79,8 +79,8 @@ def calculate_distance(x1: float, y1: float, x2: float, y2: float) -> float:
 
 1. Clone your fork:
    ```bash
-   git clone https://github.com/yourusername/asteroids-pygame.git
-   cd asteroids-pygame
+   git clone https://github.com/kfirmoscovich1/atari-asteroids-pygame.git
+cd atari-asteroids-pygame
    ```
 
 2. Create a virtual environment:

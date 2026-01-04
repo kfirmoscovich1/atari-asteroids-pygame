@@ -7,9 +7,16 @@ from pathlib import Path
 from typing import Optional
 import pygame
 import sys
+import os
 
-# Get the project root directory (parent of utils folder)
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+# Get the project root directory
+# Support both normal execution and PyInstaller bundled execution
+if getattr(sys, 'frozen', False):
+    # Running as compiled EXE (PyInstaller)
+    _PROJECT_ROOT = Path(sys._MEIPASS)
+else:
+    # Running as script
+    _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 def get_asset_path(relative_path: str) -> Path:
@@ -18,6 +25,7 @@ def get_asset_path(relative_path: str) -> Path:
 
     This ensures assets can be loaded regardless of the current working directory,
     which is essential for running the game from different locations.
+    Also supports PyInstaller bundled executables.
 
     Args:
         relative_path: Path relative to the project root (e.g., 'assets/sounds/fire.wav')

@@ -18,17 +18,14 @@ from utils.Resource_Loader import load_image, load_font, get_asset_path
 # Global variable to identify if the video has already been played
 intro_played = False
 
-# Try to import moviepy, but make it optional
+# Try to import cv2 (OpenCV) for video playback - works better with PyInstaller
 try:
-    from moviepy import VideoFileClip
-    MOVIEPY_AVAILABLE = True
+    import cv2
+    import numpy as np
+    CV2_AVAILABLE = True
 except ImportError:
-    try:
-        from moviepy.editor import VideoFileClip
-        MOVIEPY_AVAILABLE = True
-    except ImportError:
-        MOVIEPY_AVAILABLE = False
-        print("[INFO] moviepy not installed - intro video will be skipped")
+    CV2_AVAILABLE = False
+    print("[INFO] OpenCV not installed - intro video will be skipped")
 
 
 def play_intro_video(screen):
@@ -37,63 +34,73 @@ def play_intro_video(screen):
 
     This function plays a retro-style intro video when the game is first launched.
     The video loops twice and can be skipped with any key press.
+    Uses OpenCV (cv2) for video playback as it works reliably with PyInstaller.
 
     Args:
         screen: Pygame surface to draw the video on
     """
-    if not MOVIEPY_AVAILABLE:
+    if not CV2_AVAILABLE:
+        print("[INFO] OpenCV not available, skipping intro video")
         return
         
     video_path = get_asset_path('assets/atari.mp4')
+    print(f"[DEBUG] Looking for video at: {video_path}")
     if not video_path.exists():
         print("[INFO] Intro video not found, skipping...")
         return
 
+    print("[INFO] Playing intro video...")
     try:
-        clip = VideoFileClip(str(video_path))
+        cap = cv2.VideoCapture(str(video_path))
+        if not cap.isOpened():
+            print("[ERROR] Could not open video file")
+            return
 
         clock = pygame.time.Clock()
-        clip_duration = clip.duration
-        start_time = pygame.time.get_ticks()
-        loop_count = 0
-
+        fps = cap.get(cv2.CAP_PROP_FPS) or 30
+        
         # Calculate target size (half screen size)
         target_width = SCREEN_WIDTH // 2
         target_height = SCREEN_HEIGHT // 2
 
+        loop_count = 0
+        
         # Play the video twice unless interrupted
         while loop_count < 2:
-            current_time = (pygame.time.get_ticks() - start_time) / 1000
-
-            # Reset and increment loop counter when video finishes
-            if current_time > clip_duration:
-                start_time = pygame.time.get_ticks()
+            ret, frame = cap.read()
+            
+            # Reset video when it ends
+            if not ret:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 loop_count += 1
                 continue
 
             # Check for exit or skip events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    clip.close()
+                    cap.release()
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    clip.close()
+                    cap.release()
                     return  # Skip video when any key is pressed
 
-            # Get and display the current video frame
-            frame_time = (pygame.time.get_ticks() - start_time) / 1000
-            frame = clip.get_frame(frame_time)
-            frame_surface = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
-
-            frame_surface = pygame.transform.scale(frame_surface, (target_width, target_height))
+            # Convert BGR (OpenCV) to RGB and then to pygame surface
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.resize(frame, (target_width, target_height))
+            
+            # Rotate and flip for correct pygame orientation
+            frame = np.rot90(frame)
+            frame = np.flipud(frame)
+            
+            frame_surface = pygame.surfarray.make_surface(frame)
 
             screen.fill(BLACK)
             screen.blit(frame_surface, frame_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
             pygame.display.update()
-            clock.tick(30)  # 30 FPS for video playback
+            clock.tick(fps)
 
-        clip.close()
+        cap.release()
 
         # Brief pause after video ends
         pause_start = pygame.time.get_ticks()
