@@ -1,0 +1,9 @@
+# Asteroids - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core game engine
+pygame>=2.6.0
+
+# Optional: For intro video playback
+# Uncomment if you want the intro video feature
+moviepy>=1.0.3
