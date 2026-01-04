@@ -20,11 +20,15 @@ intro_played = False
 
 # Try to import moviepy, but make it optional
 try:
-    from moviepy.editor import VideoFileClip
+    from moviepy import VideoFileClip
     MOVIEPY_AVAILABLE = True
 except ImportError:
-    MOVIEPY_AVAILABLE = False
-    print("[INFO] moviepy not installed - intro video will be skipped")
+    try:
+        from moviepy.editor import VideoFileClip
+        MOVIEPY_AVAILABLE = True
+    except ImportError:
+        MOVIEPY_AVAILABLE = False
+        print("[INFO] moviepy not installed - intro video will be skipped")
 
 
 def play_intro_video(screen):
