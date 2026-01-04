@@ -215,7 +215,7 @@ asteroids-pygame/
 
 | Main Menu | Gameplay | Game Over |
 |:---------:|:--------:|:---------:|
-| ![Menu](assets/screenshots/menu.png) | ![Game](assets/screenshots/gameplay.png) | ![End](assets/screenshots/gameover.png) |
+| ![Menu](assets/screenshots/menu.png) | ![Game](assets/screenshots/game.png) | ![End](assets/screenshots/gameover.png) |
 
 ---
 
